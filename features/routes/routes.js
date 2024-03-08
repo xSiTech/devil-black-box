@@ -1,9 +1,9 @@
 import { Router } from "express";
-import userController from '../controllers/userController.js';
+import userRoutes from '../routes/userRoutes.js';
 import campaignController from '../controllers/campaignController.js';
 
 const api = Router()
-.use(userController)
+.use(userRoutes)
 .use(campaignController);
 
 

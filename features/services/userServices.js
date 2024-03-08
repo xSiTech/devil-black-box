@@ -1,50 +1,16 @@
 import prisma from "../../DB/database.js";
-import Joi from "joi";
 import uploadFile from '../../config/cloudinary.js';
 
-const schema = Joi.object({
-  firstname: Joi.string().required(),
-  lastname: Joi.string().required(),
-  email: Joi.string().email().required(),
-  mobileNumber: Joi.string()
-    .regex(/^\d{10}$/)
-    .required(),
-  latitude: Joi.number().required(),
-  longitude: Joi.number().required(),
-  city: Joi.string().required(),
-  area: Joi.string().required(),
-  state: Joi.string().required(),
-  country: Joi.string().required(),
-});
 
-export const addUser = async (req, res) => {
+
+export const addUser = async (userData) => {
   try {
-    const { error, value } = schema.validate(req.body);
-
-    if (error) {
-      return res
-        .status(400)
-        .json({ status: 400, message: error.details[0].message });
-    }
-
-    const {
-      firstname,
-      lastname,
-      email,
-      mobileNumber,
-      profileImage,
-      latitude,
-      longitude,
-      city,
-      area,
-      state,
-      country,
-    } = value;
+    const {firstName, lastName, email, mobileNumber, latitude, longitude,city, area, state, country} = userData;
 
     const newUser = await prisma.user.create({
       data: {
-        firstName: firstname,
-        lastName: lastname,
+        firstName: firstName,
+        lastName: lastName,
         email: email,
         mobileNumber: mobileNumber,
         latitude: latitude,
@@ -56,34 +22,25 @@ export const addUser = async (req, res) => {
       },
     });
 
-    return res.json({
-      status: 200,
-      data: newUser,
-      message: "New User Added Successfully",
-    });
+    return  newUser
   } catch (error) {
-    console.log(error);
-    return res.json({ status: 500, message: "Add User Failed" });
+    throw error;
   }
 };
 
-export const allUser = async (req, res) => {
-  try {
+export const allUser = async (users) => {
+  try{
     const allUser = await prisma.user.findMany({});
 
-    return res.json({
-      status: 200,
-      data: allUser,
-      message: "Get All The Users",
-    });
-  } catch (error) {
-    return res.json({ status: 500, message: "Get All User Failed" });
+    return allUser
+  }catch(error){
+    throw error;
   }
-};
+}
 
-export const showUser = async (req, res) => {
+export const showUser = async (userData) => {
   try {
-    const userId = req.params.id;
+      const userId = userData;
 
     const user = await prisma.user.findUnique({
       where: {
@@ -91,31 +48,20 @@ export const showUser = async (req, res) => {
       },
     });
 
-    return res.json({
-      status: 200,
-      data: user,
-      message: "Show User Successfully",
-    });
+    return  user
+    
   } catch (error) {
-    return res.json({ status: 500, message: "Show User Failed" });
+    throw error.message;
   }
 };
 
-export const updateUser = async (req, res) => {
+export const update = async (updateUserData, userBodyData) => {
   try {
-    const userId = req.params.id;
-
-    const { error, value } = schema.validate(req.body);
-
-    if (error) {
-      return res
-        .status(400)
-        .json({ status: 400, message: error.details[0].message });
-    }
-
+    const userId = updateUserData;
+    
     const {
-      firstname,
-      lastname,
+      firstName,
+      lastName,
       email,
       mobileNumber,
       profileImage,
@@ -125,15 +71,15 @@ export const updateUser = async (req, res) => {
       area,
       state,
       country,
-    } = value;
+    } = userBodyData;
 
     const updatedUser = await prisma.user.update({
       where: {
         id: userId,
       },
       data: {
-        firstName: firstname,
-        lastName: lastname,
+        firstName: firstName,
+        lastName: lastName,
         email: email,
         mobileNumber: mobileNumber,
         latitude: latitude,
@@ -145,20 +91,16 @@ export const updateUser = async (req, res) => {
       },
     });
 
-    return res.json({
-      status: 200,
-      data: updatedUser,
-      message: "User Updated Successfully",
-    });
+    return  updatedUser
+   
   } catch (error) {
-    console.log(error);
-    return res.json({ status: 500, message: "Error in update user" });
+    throw error;
   }
 };
 
-export const softDeleteUser = async (req, res) => {
+export const softDeleteUser = async (usersId) => {
   try {
-    const userId = req.params.id;
+    const userId = usersId;
 
     const deletedData = await prisma.user.update({
       where: {
@@ -168,45 +110,42 @@ export const softDeleteUser = async (req, res) => {
         deleted: true,
       },
     });
-    return res.json({ status: 200, message: "User Deleted Successfully" });
+    return deletedData
   } catch (error) {
-    console.log(error);
-    return res.json({ status: 500, message: "delete User Failed" });
+    throw error;
   }
 };
 
-export const deleteUser = async (req, res) => {
+export const deleteUser = async (userData) => {
   try {
-    const userId = req.params.id;
+    const userId = userData ;
 
     const deletedUser = await prisma.user.delete({
       where: {
         id: userId,
       },
     });
-    return res.json({ status: 200, message: "User Deleted Successfully" });
+    return deletedUser;
   } catch (error) {
-    return res.json({ status: 500, message: "User Fully Deleted Failed" });
+      throw error ;
   }
 };
 
-export const profileImageUplaod = async (req, res) => {
+export const profileImageUplaod = async (userdata, result , profilePhoto) => {
   try {
-    const userId = req.params.id;
+    const userId = userdata;
+    const profileImage = profilePhoto;
+    const data = result;
 
-    const result = await uploadFile(req.file.path);
-    const profileImage = result.secure_url;
-    
     const imageData = await prisma.user.update({
       where: { id: userId },
       data: { profileImage: profileImage }
     });
 
-    return res.status(200).json({ data: imageData, message: "Image uploaded successfully" });
+    return imageData
 
   } catch (error) {
-    console.log(error);
-    return res.json({ status: 500, message: "profile Image Upload Failed" });
+    throw error;
   }
 };
 
