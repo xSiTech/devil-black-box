@@ -15,6 +15,10 @@ const schema = Joi.object({
   country: Joi.string().required(),
 });
 
+const nameSchema = Joi.object({
+  name: Joi.string().required(),
+})
+
 export const validUser = (req, res, next) => {
     const {error} = schema.validate(req.body);
     if(error){
@@ -22,3 +26,4 @@ export const validUser = (req, res, next) => {
     }
     next();
 }
+

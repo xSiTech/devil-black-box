@@ -1,10 +1,10 @@
 import { Router } from "express";
 import userRoutes from '../routes/userRoutes.js';
-import campaignController from '../controllers/campaignController.js';
+import campaignRoutes from '../routes/campaignRoutes.js'
 
 const api = Router()
 .use(userRoutes)
-.use(campaignController);
+.use(campaignRoutes);
 
 
 export default Router().use('/api' , api);

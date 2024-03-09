@@ -29,6 +29,23 @@ model User {
   deleted       Boolean  @default(false)
   created_at    DateTime @default(now())
   updated_at    DateTime @updatedAt
-  campaignId    String   @default(uuid()) 
+  campaignId    String   @default(uuid())
+
+  createdCampaigns Campaign[] @relation("CreatedBy")
+  updatedCampaigns Campaign[] @relation("UpdatedBy")
+
+}
+
+model Campaign {
+  id          String @id @default(uuid())
+  name        String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  posterImage String?
+  createById  String
+  updatedById String
+  deleted     Boolean  @default(false)
+  createdBy   User @relation("CreatedBy", fields: [createById], references: [id])
+  updatedBy   User @relation("UpdatedBy", fields: [updatedById], references: [id])
 }
 
