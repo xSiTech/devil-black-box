@@ -1,5 +1,5 @@
 
-import {addPosterText , updateTextPoster, allPoster} from '../services/posterTextServices.js';
+import {addPosterText , updateTextPoster, allPoster , sPosterDeletetext , PosterTextDelete} from '../services/posterTextServices.js';
 
 export const createPosterText = async (req,res) => {
     try {
@@ -66,3 +66,59 @@ export const allPostertext = async (req, res) => {
         return res.json({status:500 , message:"Get all PosterText failed" });
     }
 }
+
+export const sDeletePostertext = async (req, res) => {
+    try {
+      const errorData = {
+        status: 200,
+        data: null,
+        message: "",
+      };
+  
+      const sData = await sPosterDeletetext(req.params.id);
+  
+      if (sData) {
+        return res.json({ status: 200, message: "PosterText Delete Successfully " });
+      } else {
+        errorData.status = 500,
+        errorData.message ="Failed to Delete PosterText"
+        return res.json(errorData);
+      }
+    } catch (error) {
+      return res.json({ status: 500, message: "PosterText Soft delete failed" });
+    }
+  };
+  
+  export const DeletePostertext = async (req, res) => {
+    try {
+      const dataError = {
+        status: 200,
+        data: null,
+        message: "",
+      }
+  
+      const deleteData = await PosterTextDelete(req.params.id);
+  
+      if (!deleteData) {
+        dataError.status = 500,
+        dataError.message = "Failed to Delete Poster";
+        return res.json(dataError);
+      }
+  
+      return res.json({status: 200 , message:"Poster deleted successfully"});
+    } catch (error) {
+        console.log(error);
+      return res.json({ status: 500, messgae: "Delete Poster Failed" });
+    }
+  };
+  
+//   export const onePoster = async (req,res) => {
+//     try {
+//       const posterData = await posterOne(req.params.id);
+  
+//       return res.json({status: 200, data:posterData , message:"One poster was get successfully"});
+//     }catch(error){
+//       console.log(error);
+//       return res.json({status: 500 , message:"One Poster get Failed"});
+//     }
+//   }

@@ -48,3 +48,31 @@ export const allPoster = async () => {
     return error;
   }
 };
+
+export const sPosterDeletetext = async(id) => {
+  try {
+    console.log(id);
+
+    const sDeleteData = await prisma.posterText.update({
+      where:{id:id},
+      data:{
+        deleted:true,
+      }
+    });
+    return sDeleteData;
+  }catch(error){
+    return error;
+  }
+}
+
+export const PosterTextDelete = async (id) => {
+  try {
+    console.log(id);
+    const deletedData = await prisma.posterText.delete({
+      where:{id:id},
+    });
+    return deletedData;
+  }catch(error){
+    return error;
+  }
+}

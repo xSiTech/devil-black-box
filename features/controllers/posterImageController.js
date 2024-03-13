@@ -1,7 +1,9 @@
 import {
   addPosterImage,
   allPosterImage,
-  updateImagePoster
+  updateImagePoster,
+  sDeletePoster,
+  posterDeleteimage
 } from "../services/posterImageServices.js";
 
 export const createPosterImage = async (req, res) => {
@@ -81,3 +83,38 @@ export const getAllPosterImages = async (req, res) => {
   }
 };
 
+export const sDeletePosterImage = async (req, res) => {
+    try {
+        const errorData = {
+            status: 200,
+            data: null,
+            message: "",
+          };
+      
+          const sData = await sDeletePoster(req.params.id);
+      
+          if (sData) {
+            return res.json({ status: 200, message: "Poster Delete Successfully " });
+          } else {
+            errorData.status = 500,
+            errorData.message ="Failed to Delete Poster"
+            return res.json(errorData);
+          }
+    }catch(error){
+        return res.json({ status: 500, message: "Delete Poster Image Failed" });
+    }
+}
+
+export const DeletePosterImage = async (req, res) => {
+    try{
+        const deletedData = await posterDeleteimage(req.params.id);
+
+        if(!deletedData) {
+            return res.json({status: 500 , message:"this Poster image Not in our system"});
+        }
+
+        return res.json({status:200 , message:"posterImage Deleted Successfully"});
+    }catch(error){
+        return res.json({status:500 , message:"Delete Poster Failed"})
+    }
+}

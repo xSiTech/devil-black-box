@@ -33,3 +33,29 @@ export const allPosterImage = async () => {
   }
 };
 
+export const sDeletePoster = async(id) => {
+    try{
+        const deletedPosterData = await prisma.posterPersonImage.update({
+            where:{id:id},
+            data:{
+                deleted:true,
+            }
+        });
+        return deletedPosterData;
+    }catch(error){
+        return error
+    }
+}
+
+export const posterDeleteimage = async(id) => {
+    try {
+        const Deleted = await prisma.posterPersonImage.delete({
+            where:{id:id},
+        });
+
+        return Deleted;
+    }catch(error){
+        return error;
+    }
+}
+

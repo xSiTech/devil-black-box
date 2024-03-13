@@ -37,15 +37,11 @@ export const sPosterDelete = async (id) => {
     console.log(id);
 
     const deletedata = await prisma.poster.update({
-      where: id,
+      where: {id:id},
       data: {
         deleted: true,
       },
     });
-
-    // if(!deletedata){
-    //   return { status: 400, message: "Poster not found" };
-    // }
     return deletedata;
   } catch (error) {
     return error;
