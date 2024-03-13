@@ -14,30 +14,30 @@ datasource db {
 }
 
 model User {
-  id            String  @id  @default(uuid()) 
-  firstName     String 
-  lastName      String
-  email         String
-  mobileNumber  String?
-  profileImage  String?
-  latitude      Float?
-  longitude     Float?
-  city          String
-  area          String
-  state         String
-  country       String
-  deleted       Boolean  @default(false)
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
-  campaignId    String   @default(uuid())
-
+  id               String     @id @default(uuid())
+  firstName        String
+  lastName         String
+  email            String
+  mobileNumber     String?
+  profileImage     String?
+  latitude         Float?
+  longitude        Float?
+  city             String
+  area             String
+  state            String
+  country          String
+  deleted          Boolean    @default(false)
+  created_at       DateTime   @default(now())
+  updated_at       DateTime   @updatedAt
+  campaignId       String     @default(uuid())
   createdCampaigns Campaign[] @relation("CreatedBy")
   updatedCampaigns Campaign[] @relation("UpdatedBy")
-
+  createdPosters   Poster[]   @relation("CreatedBy")
+  updatedPosters   Poster[]   @relation("UpdatedBy") 
 }
 
 model Campaign {
-  id          String @id @default(uuid())
+  id          String   @id @default(uuid())
   name        String
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
@@ -45,7 +45,50 @@ model Campaign {
   createById  String
   updatedById String
   deleted     Boolean  @default(false)
-  createdBy   User @relation("CreatedBy", fields: [createById], references: [id])
-  updatedBy   User @relation("UpdatedBy", fields: [updatedById], references: [id])
+  createdBy   User     @relation("CreatedBy", fields: [createById], references: [id])
+  updatedBy   User     @relation("UpdatedBy", fields: [updatedById], references: [id])
 }
 
+model Poster {
+  id                String              @id @default(uuid())
+  image             String
+  height            String
+  width             String
+  slug              String
+  created_at        DateTime            @default(now())
+  updated_at        DateTime            @updatedAt
+  createById        String
+  updatedById       String
+  deleted           Boolean             @default(false)
+  createdBy         User                @relation("CreatedBy", fields: [createById], references: [id])
+  updatedBy         User                @relation("UpdatedBy", fields: [updatedById], references: [id])
+  PosterText        PosterText[]
+  PosterPersonImage PosterPersonImage[]
+}
+
+model PosterText {
+  id          String @id @default(uuid())
+  text        String
+  x           String
+  y           String
+  color       String
+  font_size   String
+  font_family String
+  size        String
+  deleted     Boolean             @default(false)
+  poster      Poster @relation(fields: [poster_id], references: [id])
+  poster_id   String
+  field_name  String
+}
+
+model PosterPersonImage {
+  id         String   @id @default(uuid())
+  x          String
+  y          String
+  width      String
+  height     String
+  deleted    Boolean  @default(false)
+  poster     Poster   @relation(fields: [poster_id], references: [id])
+  poster_id  String
+  field_name String
+}
