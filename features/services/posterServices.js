@@ -34,8 +34,6 @@ export const getAllPoster = async () => {
 
 export const sPosterDelete = async (id) => {
   try {
-    console.log(id);
-
     const deletedata = await prisma.poster.update({
       where: {id:id},
       data: {
@@ -61,12 +59,11 @@ export const PosterDelete = async (id) => {
 
 export const posterOne = async (id) => {
   try {
-
     const onePosterData = await prisma.poster.findUnique({
       where: { id: id },
       select: {
         image: true,
-        posterPersonImage: {
+        PosterPersonImage: {
           select: {
             x: true,
             y: true,

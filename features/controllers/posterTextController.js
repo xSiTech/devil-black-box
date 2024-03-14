@@ -1,5 +1,5 @@
 
-import {addPosterText , updateTextPoster, allPoster , sPosterDeletetext , PosterTextDelete} from '../services/posterTextServices.js';
+import {addPosterText , updateTextPoster, allPoster , sPosterDeletetext , PosterTextDelete , posterOnetext} from '../services/posterTextServices.js';
 
 export const createPosterText = async (req,res) => {
     try {
@@ -35,14 +35,12 @@ export const updatePosterText = async (req, res) => {
         }
 
         const textPData = req.body;
-        console.log(textPData);
 
         const posterTextData = await updateTextPoster(req.params.id, textPData);
-        console.log(posterTextData);
 
         if(!posterTextData){
             dataMessage.status =500,
-            dataMessage.message ="Poster not found in our system!!"
+            dataMessage.message ="Postertext not found in our system!!"
             return res.json(dataMessage);
         }
 
@@ -77,19 +75,19 @@ export const sDeletePostertext = async (req, res) => {
   
       const sData = await sPosterDeletetext(req.params.id);
   
-      if (sData) {
-        return res.json({ status: 200, message: "PosterText Delete Successfully " });
-      } else {
+      if (!sData) {
         errorData.status = 500,
         errorData.message ="Failed to Delete PosterText"
         return res.json(errorData);
       }
+      return res.json({ status: 200, message: "PosterText Delete Successfully " });
+
     } catch (error) {
       return res.json({ status: 500, message: "PosterText Soft delete failed" });
     }
   };
   
-  export const DeletePostertext = async (req, res) => {
+export const DeletePostertext = async (req, res) => {
     try {
       const dataError = {
         status: 200,
@@ -110,15 +108,19 @@ export const sDeletePostertext = async (req, res) => {
         console.log(error);
       return res.json({ status: 500, messgae: "Delete Poster Failed" });
     }
-  };
+};
   
-//   export const onePoster = async (req,res) => {
-//     try {
-//       const posterData = await posterOne(req.params.id);
-  
-//       return res.json({status: 200, data:posterData , message:"One poster was get successfully"});
-//     }catch(error){
-//       console.log(error);
-//       return res.json({status: 500 , message:"One Poster get Failed"});
-//     }
-//   }
+export const onePostertext = async (req,res) => {
+    try {
+      const posterData = await posterOnetext(req.params.id);
+
+      if(!posterData) {
+        return res.json({status:500 , message:"Poster text is not avalibale in system"})
+      }
+
+      return res.json({status: 200, data:posterData , message:"One poster Text  get successfully"});
+    }catch(error){
+      console.log(error);
+      return res.json({status: 500 , message:"One Poster get Failed"});
+    }
+}

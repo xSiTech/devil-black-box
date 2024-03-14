@@ -52,10 +52,20 @@ export const posterDeleteimage = async(id) => {
         const Deleted = await prisma.posterPersonImage.delete({
             where:{id:id},
         });
-
         return Deleted;
     }catch(error){
         return error;
     }
+}
+
+export const posterOneImage = async(id) => {
+  try{
+    const imageData = await prisma.posterPersonImage.findUnique({
+      where:{id:id},
+    });
+    return imageData;
+  }catch(error){
+    return error;
+  }
 }
 

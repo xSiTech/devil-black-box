@@ -51,7 +51,6 @@ export const allPoster = async () => {
 
 export const sPosterDeletetext = async(id) => {
   try {
-    console.log(id);
 
     const sDeleteData = await prisma.posterText.update({
       where:{id:id},
@@ -73,6 +72,17 @@ export const PosterTextDelete = async (id) => {
     });
     return deletedData;
   }catch(error){
+    return error;
+  }
+}
+
+export const posterOnetext = async (id) => {
+  try {
+      const onePoster = await prisma.posterText.findUnique({
+        where:{id:id},
+      });
+      return onePoster;
+  }catch(error) {
     return error;
   }
 }

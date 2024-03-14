@@ -14,10 +14,6 @@ app.use(fileUpload({
     useTempFiles: true,
 }));
 
-app.get("/", (req , res) => {
-    return res.send("HII welcome to the Api")
-});
-
 app.listen(PORT, () => {
     console.log(`server is Started at port ${PORT}`);
 });

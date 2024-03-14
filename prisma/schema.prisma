@@ -33,7 +33,7 @@ model User {
   createdCampaigns Campaign[] @relation("CreatedBy")
   updatedCampaigns Campaign[] @relation("UpdatedBy")
   createdPosters   Poster[]   @relation("CreatedBy")
-  updatedPosters   Poster[]   @relation("UpdatedBy") 
+  updatedPosters   Poster[]   @relation("UpdatedBy")
 }
 
 model Campaign {
@@ -67,7 +67,7 @@ model Poster {
 }
 
 model PosterText {
-  id          String @id @default(uuid())
+  id          String   @id @default(uuid())
   text        String
   x           String
   y           String
@@ -75,10 +75,12 @@ model PosterText {
   font_size   String
   font_family String
   size        String
-  deleted     Boolean             @default(false)
-  poster      Poster @relation(fields: [poster_id], references: [id])
+  deleted     Boolean  @default(false)
+  poster      Poster   @relation(fields: [poster_id], references: [id])
   poster_id   String
   field_name  String
+  created_at        DateTime            @default(now())
+  updated_at        DateTime            @updatedAt
 }
 
 model PosterPersonImage {
@@ -91,4 +93,6 @@ model PosterPersonImage {
   poster     Poster   @relation(fields: [poster_id], references: [id])
   poster_id  String
   field_name String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }

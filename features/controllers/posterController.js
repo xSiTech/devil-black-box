@@ -53,7 +53,6 @@ export const updatePoster = async (req, res) => {
     };
 
     const posterData = req.body;
-    console.log(posterData);
     // posterData.createdById = req.user.id;
     // posterData.updatedById = req.user.id;
 
@@ -109,13 +108,14 @@ export const sDeletePoster = async (req, res) => {
 
     const sData = await sPosterDelete(req.params.id);
 
-    if (sData) {
-      return res.json({ status: 200, message: "Poster Delete Successfully " });
-    } else {
+    if (!sData) {
       errorData.status = 500,
       errorData.message ="Failed to Delete Poster"
       return res.json(errorData);
     }
+
+    return res.json({ status: 200, message: "Poster Delete Successfully " });
+
   } catch (error) {
     return res.json({ status: 500, message: "Soft delete failed" });
   }
@@ -146,6 +146,10 @@ export const deletePoster = async (req, res) => {
 export const onePoster = async (req,res) => {
   try {
     const posterData = await posterOne(req.params.id);
+
+    if(!posterData) {
+      return res.json({status: 500, messgae: "This poster is not in our system"})
+    }
 
     return res.json({status: 200, data:posterData , message:"One poster was get successfully"});
   }catch(error){
