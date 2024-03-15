@@ -57,11 +57,11 @@ model Poster {
   slug              String
   created_at        DateTime            @default(now())
   updated_at        DateTime            @updatedAt
-  createById        String
-  updatedById       String
+  createById        String?
+  updatedById       String?
   deleted           Boolean             @default(false)
-  createdBy         User                @relation("CreatedBy", fields: [createById], references: [id])
-  updatedBy         User                @relation("UpdatedBy", fields: [updatedById], references: [id])
+  createdBy         User?               @relation("CreatedBy", fields: [createById], references: [id])
+  updatedBy         User?               @relation("UpdatedBy", fields: [updatedById], references: [id])
   PosterText        PosterText[]
   PosterPersonImage PosterPersonImage[]
 }
@@ -79,8 +79,8 @@ model PosterText {
   poster      Poster   @relation(fields: [poster_id], references: [id])
   poster_id   String
   field_name  String
-  created_at        DateTime            @default(now())
-  updated_at        DateTime            @updatedAt
+  created_at  DateTime            @default(now())
+  updated_at  DateTime            @updatedAt
 }
 
 model PosterPersonImage {

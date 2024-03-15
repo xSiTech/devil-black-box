@@ -7,9 +7,11 @@ export const createCampaign = async (req, res) => {
         const campaignData = req.body;
 
         const result = await uploadFile(req.file.path);
-        const poster = result.secure_url;
+        campaignData.image = result.secure_url;
 
-        const campaign = await addCampaign(campaignData , result, poster);
+        console.log(campaignData);
+
+        const campaign = await addCampaign(campaignData);
 
         return res.json({status:200 , data: campaign , message:"Campaign create Successfully"});
     }catch(error){
@@ -20,15 +22,12 @@ export const createCampaign = async (req, res) => {
 export const getAllCampaigns = async (req, res) => {
     try{
 
-        const campaigns = await allCampaigns();
-        
+        const currentPage = parseInt(req.query.page) || 1;
+        const perPage = parseInt(req.query.perPage)  || 10;
 
-        if(campaigns.length == 0) {
-            return res.json({status:404 , message:"Campaigns not found"});
-        }
+        const campaigns = await allCampaigns(currentPage , perPage );
 
         return res.json({status:200 , data: campaigns , message:"Get All Campaigns  Successfully"});
-
     }catch(error){
         return res.json({status:500 , message:error.message})
     }

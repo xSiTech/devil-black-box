@@ -39,11 +39,17 @@ export const updateTextPoster = async (id, data) => {
   }
 };
 
-export const allPoster = async () => {
+export const allPoster = async (currentPage, perPage) => {
   try {
-    const alldata = await prisma.posterText.findMany({});
+    const totalCount =await  prisma.posterText.count();
+    const totalPages = Math.ceil(totalCount / perPage);
 
-    return alldata;
+    const alldata = await prisma.posterText.findMany({
+      skip:(currentPage - 1) * perPage,
+      take:perPage
+    });
+
+    return {alldata, totalCount , totalPages};
   } catch (error) {
     return error;
   }
@@ -51,6 +57,12 @@ export const allPoster = async () => {
 
 export const sPosterDeletetext = async(id) => {
   try {
+    const existingPosterText = await prisma.posterText.findUnique({
+      where:{id:id},
+    });
+    if(!existingPosterText){
+      throw new Error("Poster text is not exist in our system");
+    }
 
     const sDeleteData = await prisma.posterText.update({
       where:{id:id},
@@ -60,19 +72,25 @@ export const sPosterDeletetext = async(id) => {
     });
     return sDeleteData;
   }catch(error){
-    return error;
+    throw error;
   }
 }
 
 export const PosterTextDelete = async (id) => {
   try {
-    console.log(id);
+    const existingPosterText = await prisma.posterText.findUnique({
+      where:{id:id},
+    });
+    if(!existingPosterText){
+      throw new Error("Poster text is not exist in our system");
+    }
+
     const deletedData = await prisma.posterText.delete({
       where:{id:id},
     });
     return deletedData;
   }catch(error){
-    return error;
+    throw error;
   }
 }
 

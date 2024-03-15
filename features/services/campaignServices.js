@@ -1,19 +1,10 @@
 import prisma from "../../DB/database.js";
 
-export const addCampaign = async (campaignData, result, poster) => {
+export const addCampaign = async (campaignData) => {
   try {
-    const { name, createdBy, updatedBy } = campaignData;
-
-    const posterImage = poster;
-    const data = result;
-
+    
     const newCampaign = await prisma.campaign.create({
-      data: {
-        name: name,
-        posterImage: posterImage,
-        createdBy: createdBy,
-        updatedBy: updatedBy,
-      },
+      data: campaignData,
     });
     return newCampaign;
   } catch (error) {
@@ -21,12 +12,22 @@ export const addCampaign = async (campaignData, result, poster) => {
   }
 };
 
-export const allCampaigns = async () => {
+export const allCampaigns = async (currentPage , perPage) => {
   try {
-    const allcampaigns = await prisma.campaign.findMany({});
-    return allcampaigns;
+    const totalCount = await prisma.posterText.count();
+    const totalPages = Math.ceil(totalCount / perPage);
+
+    const allcampaigns = await prisma.campaign.findMany({
+      skip:(currentPage - 1) * perPage,
+      take:perPage
+    });
+
+    if(allcampaigns.length == 0) {
+      throw new Error ("Campaigns not found");
+  }
+    return {allcampaigns , totalCount , totalPages};
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 

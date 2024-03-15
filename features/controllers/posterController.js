@@ -40,6 +40,7 @@ export const createPoster = async (req, res) => {
       message: "Poster Created Successfully",
     });
   } catch (error) {
+    console.log(error);
     return res.json({ status: 500, messgae: error.message });
   }
 };
@@ -82,15 +83,22 @@ export const updatePoster = async (req, res) => {
 
 export const allPosters = async (req, res) => {
   try {
-    const posters = await getAllPoster();
+
+    const currentPage = parseInt(req.query.page) || 1;
+    const perPage = parseInt(req.query.perPage)  || 10;
+
+    const posters = await getAllPoster(currentPage , perPage);
 
     if (posters.length == 0) {
       return res.json({ status: 500, message: "No posters found!!!" });
     }
+    console.log(posters)
 
     return res.json({
       status: 200,
       data: posters,
+      totalCount:posters.totalCount,
+      totalPags:posters.totalPages,
       message: "All poster get Successfully",
     });
   } catch (error) {

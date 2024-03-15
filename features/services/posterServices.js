@@ -23,10 +23,16 @@ export const updatePosterData = async (posterData) => {
   }
 };
 
-export const getAllPoster = async () => {
+export const getAllPoster = async (currentPage, perPage) => {
   try {
-    const posters = await prisma.poster.findMany({});
-    return posters;
+    const totalCount = await prisma.poster.count();
+    const totalPages = Math.ceil(totalCount / perPage);
+
+    const posters = await prisma.poster.findMany({
+      skip: (currentPage - 1) * perPage,
+      take: perPage,
+    });
+    return { posters, totalCount, totalPages };
   } catch (error) {
     return error;
   }
@@ -34,26 +40,46 @@ export const getAllPoster = async () => {
 
 export const sPosterDelete = async (id) => {
   try {
+    const existingPoster = await prisma.poster.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!existingPoster) {
+      throw new Error("Poster not found");
+    }
+
     const deletedata = await prisma.poster.update({
-      where: {id:id},
+      where: { id: id },
       data: {
         deleted: true,
       },
     });
     return deletedata;
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 
 export const PosterDelete = async (id) => {
   try {
+    const existingPoster = await prisma.poster.findUnique({
+      where: {
+        id: id,
+      },
+    });
+    
+    if (!existingPoster) {
+      throw new Error("Poster not found");
+    }
+
     const dataDeleted = await prisma.poster.delete({
       where: { id: id },
     });
     return dataDeleted;
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 

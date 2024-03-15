@@ -53,13 +53,17 @@ export const updatePosterText = async (req, res) => {
 
 export const allPostertext = async (req, res) => {
     try {
-        const allposterData = await allPoster();
+
+      const currentPage = parseInt(req.query.page) || 1;
+      const perPage = parseInt(req.query.perPage)  || 10;
+
+        const allposterData = await allPoster(currentPage, perPage);
 
         if(allposterData.length == 0){
             return res.json({status:500, message:"PosterText not found in our system!!"})
         }
 
-        return res.json({status:200 , data: allposterData , message:"All postertext get Successfully"});
+        return res.json({status:200 , data: allposterData , totalCount : allposterData.totalCount , totalPages: allposterData.totalPages,  message:"All postertext get Successfully"});
     }catch(error){
         return res.json({status:500 , message:"Get all PosterText failed" });
     }

@@ -65,7 +65,10 @@ export const updatePosterImage = async (req, res) => {
 
 export const getAllPosterImages = async (req, res) => {
   try {
-    const allData = await allPosterImage();
+    const currentPage = parseInt(req.query.page) || 1;
+    const perPage = parseInt(req.query.perPage)  || 10;
+
+    const allData = await allPosterImage(currentPage , perPage);
 
     if (allData.length == 0) {
       return res.json({
@@ -77,6 +80,8 @@ export const getAllPosterImages = async (req, res) => {
     return res.json({
       status: 200,
       data: allData,
+      totalCount:allData.totalCount,
+      totalPags:allData.totalPages,
       message: "All PosterImages get Successfully",
     });
   } catch (error) {

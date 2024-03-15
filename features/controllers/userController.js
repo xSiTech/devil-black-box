@@ -15,7 +15,11 @@ export const createUser = async (req,res) => {
 
 export const getUsers = async (req,res) => {
     try{
-        const users = await allUser();
+
+        const currentPage = parseInt(req.query.page) || 1;
+        const perPage = parseInt(req.query.perPage)  || 10;
+
+        const users = await allUser(currentPage,perPage);
 
         return res.json({status:200, data:users, message:"All users Get Successfully"});
     }catch(error){
@@ -26,9 +30,7 @@ export const getUsers = async (req,res) => {
 
 export const oneUser = async (req, res) => {
     try{
-        const userData= req.params.id;
-
-        const data = await showUser(userData);
+        const data = await showUser(req.params.id);
 
         return res.json({status:200, data:data , message:"User Get Succssfully"});
     }catch(error){
@@ -39,11 +41,9 @@ export const oneUser = async (req, res) => {
 
 export const updateUser = async(req,res) => {
     try{
-        const updateUserData = req.params.id;
-
         const userBodyData = req.body;
 
-        const updatedData = await update(updateUserData, userBodyData);
+        const updatedData = await update(req.params.id, userBodyData);
 
         return res.json({status:200 , data:updatedData , message:"User Updated Successfully"});
     }catch(error){
@@ -54,9 +54,8 @@ export const updateUser = async(req,res) => {
 
 export const sDelete  = async (req, res) => {
     try{
-        const usersId = req.params.id;
 
-        const deletedData = await softDeleteUser(usersId);
+        const deletedData = await softDeleteUser(req.params.id);
 
         return res.json({status:200 ,  message:"User Soft Deleted Successfully"});
 
@@ -67,9 +66,8 @@ export const sDelete  = async (req, res) => {
 
 export const userDelete = async(req, res) => {
     try{
-        const userData = req.params.id;
 
-        const data = await deleteUser(userData);
+        const data = await deleteUser(req.params.id);
 
         return res.json({status:200 , message:"User Deleted Successfully"});
     }catch(error){

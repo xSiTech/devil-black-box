@@ -4,16 +4,12 @@ const createPosterSchema = Joi.object({
   height: Joi.number().required(),
   width: Joi.number().required(),
   slug: Joi.string().required(),
-  createdBy: Joi.required(),
-  updatedBy: Joi.required(),
 });
 
 const updatePosterSchema = Joi.object({
     height: Joi.number(),
     width: Joi.number(),
     slug: Joi.string(),
-    createdBy: Joi.required(),
-    updatedBy: Joi.required(),
   });
 
 export const createValidPoster = (req, res, next) => {

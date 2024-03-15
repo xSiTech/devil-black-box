@@ -1,11 +1,19 @@
 import prisma from "../../DB/database.js";
 
-
-
-
 export const addUser = async (userData) => {
   try {
-    const {firstName, lastName, email, mobileNumber, latitude, longitude,city, area, state, country} = userData;
+    const {
+      firstName,
+      lastName,
+      email,
+      mobileNumber,
+      latitude,
+      longitude,
+      city,
+      area,
+      state,
+      country,
+    } = userData;
 
     const newUser = await prisma.user.create({
       data: {
@@ -22,25 +30,35 @@ export const addUser = async (userData) => {
       },
     });
 
-    return  newUser
+    return newUser;
   } catch (error) {
     throw error;
   }
 };
 
-export const allUser = async (users) => {
-  try{
-    const allUser = await prisma.user.findMany({});
+export const allUser = async (currentPage, perPage) => {
+  try {
+    const totalCount = await prisma.posterText.count();
+    const totalPages = Math.ceil(totalCount / perPage);
 
-    return allUser
-  }catch(error){
+    const allUser = await prisma.user.findMany({
+      skip: (currentPage - 1) * perPage,
+      take: perPage,
+    });
+
+    if (allUser.length == 0) {
+      throw new Error ("user not in the  system!!");
+    }
+
+    return { allUser, totalCount, totalPages };
+  } catch (error) {
     throw error;
   }
-}
+};
 
 export const showUser = async (userData) => {
   try {
-      const userId = userData;
+    const userId = userData;
 
     const user = await prisma.user.findUnique({
       where: {
@@ -48,8 +66,7 @@ export const showUser = async (userData) => {
       },
     });
 
-    return  user
-    
+    return user;
   } catch (error) {
     throw error.message;
   }
@@ -58,7 +75,7 @@ export const showUser = async (userData) => {
 export const update = async (updateUserData, userBodyData) => {
   try {
     const userId = updateUserData;
-    
+
     const {
       firstName,
       lastName,
@@ -91,8 +108,7 @@ export const update = async (updateUserData, userBodyData) => {
       },
     });
 
-    return  updatedUser
-   
+    return updatedUser;
   } catch (error) {
     throw error;
   }
@@ -110,7 +126,7 @@ export const softDeleteUser = async (usersId) => {
         deleted: true,
       },
     });
-    return deletedData
+    return deletedData;
   } catch (error) {
     throw error;
   }
@@ -118,7 +134,7 @@ export const softDeleteUser = async (usersId) => {
 
 export const deleteUser = async (userData) => {
   try {
-    const userId = userData ;
+    const userId = userData;
 
     const deletedUser = await prisma.user.delete({
       where: {
@@ -127,11 +143,11 @@ export const deleteUser = async (userData) => {
     });
     return deletedUser;
   } catch (error) {
-      throw error ;
+    throw error;
   }
 };
 
-export const profileImageUplaod = async (userdata, result , profilePhoto) => {
+export const profileImageUplaod = async (userdata, result, profilePhoto) => {
   try {
     const userId = userdata;
     const profileImage = profilePhoto;
@@ -139,13 +155,11 @@ export const profileImageUplaod = async (userdata, result , profilePhoto) => {
 
     const imageData = await prisma.user.update({
       where: { id: userId },
-      data: { profileImage: profileImage }
+      data: { profileImage: profileImage },
     });
 
-    return imageData
-
+    return imageData;
   } catch (error) {
     throw error;
   }
 };
-
